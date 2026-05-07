@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+/* superset.sh theme tokens — every token exposed as a CSS variable.
+   The hot-swap island writes to :root[style] to apply a theme. */
+:root {
+  /* UI */
+  --background: #0b0b10;
+  --foreground: #e8e8ee;
+  --card: #15151c;
+  --cardForeground: #e8e8ee;
+  --popover: #15151c;
+  --popoverForeground: #e8e8ee;
+  --primary: #7aa2f7;
+  --primaryForeground: #0b0b10;
+  --secondary: #1f1f2a;
+  --secondaryForeground: #e8e8ee;
+  --muted: #1f1f2a;
+  --mutedForeground: #8a8a99;
+  --accent: #2a2a38;
+  --accentForeground: #e8e8ee;
+  --tertiary: #15151c;
+  --tertiaryActive: #2a2a38;
+  --destructive: #f7768e;
+  --destructiveForeground: #0b0b10;
+  --border: #2a2a38;
+  --input: #2a2a38;
+  --ring: #7aa2f7;
+  --sidebar: #0b0b10;
+  --sidebarForeground: #e8e8ee;
+  --sidebarPrimary: #7aa2f7;
+  --sidebarPrimaryForeground: #0b0b10;
+  --sidebarAccent: #1f1f2a;
+  --sidebarAccentForeground: #e8e8ee;
+  --sidebarBorder: #2a2a38;
+  --sidebarRing: #7aa2f7;
+  --chart1: #f7768e;
+  --chart2: #9ece6a;
+  --chart3: #7dcfff;
+  --chart4: #e0af68;
+  --chart5: #bb9af7;
+  --highlightMatch: rgba(224, 175, 104, 0.25);
+  --highlightActive: rgba(224, 175, 104, 0.55);
+  --highlight: #e0af68;
+  --highlightForeground: #0b0b10;
+
+  /* Terminal */
+  --term-bg: #0b0b10;
+  --term-fg: #e8e8ee;
+  --term-cursor: #e8e8ee;
+  --term-cursorAccent: #0b0b10;
+  --term-selection: rgba(122, 162, 247, 0.3);
+  --term-black: #15151c;
+  --term-red: #f7768e;
+  --term-green: #9ece6a;
+  --term-yellow: #e0af68;
+  --term-blue: #7aa2f7;
+  --term-magenta: #bb9af7;
+  --term-cyan: #7dcfff;
+  --term-white: #c0c0cc;
+  --term-brightBlack: #2a2a38;
+  --term-brightRed: #ff7a93;
+  --term-brightGreen: #b9f27c;
+  --term-brightYellow: #ffd180;
+  --term-brightBlue: #8db5ff;
+  --term-brightMagenta: #d4b6ff;
+  --term-brightCyan: #a4dfff;
+  --term-brightWhite: #f8f8f2;
+}
+
+html, body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+code, pre, .mono {
+  font-family: ui-monospace, "SF Mono", "JetBrains Mono", "Fira Code", Menlo, monospace;
+}

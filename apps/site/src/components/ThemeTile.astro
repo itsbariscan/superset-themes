@@ -1,0 +1,156 @@
+---
+import type { ThemeEntry } from "../lib/themes";
+
+interface Props {
+  entry: ThemeEntry;
+}
+
+const { entry } = Astro.props;
+const t = entry.theme;
+const ui = t.ui;
+
+// Build inline style with the theme's tokens so the tile renders in its own theme
+// without CSS-variable bleed from the page-level theme.
+const styleVars = (
+  [
+    ["--tile-bg", ui.background ?? "#0b0b10"],
+    ["--tile-fg", ui.foreground ?? "#e8e8ee"],
+    ["--tile-card", ui.card ?? ui.background ?? "#15151c"],
+    ["--tile-card-fg", ui.cardForeground ?? ui.foreground ?? "#e8e8ee"],
+    ["--tile-primary", ui.primary ?? "#7aa2f7"],
+    ["--tile-primary-fg", ui.primaryForeground ?? "#0b0b10"],
+    ["--tile-muted-fg", ui.mutedForeground ?? "#8a8a99"],
+    ["--tile-border", ui.border ?? "#2a2a38"],
+    ["--tile-c1", ui.chart1 ?? "#f7768e"],
+    ["--tile-c2", ui.chart2 ?? "#9ece6a"],
+    ["--tile-c3", ui.chart3 ?? "#7dcfff"],
+    ["--tile-c4", ui.chart4 ?? "#e0af68"],
+    ["--tile-c5", ui.chart5 ?? "#bb9af7"],
+    ["--tile-accent", ui.accent ?? ui.secondary ?? "#2a2a38"],
+    ["--tile-accent-fg", ui.accentForeground ?? ui.foreground ?? "#e8e8ee"],
+    ["--tile-destructive", ui.destructive ?? "#f7768e"],
+    ["--tile-destructive-fg", ui.destructiveForeground ?? "#0b0b10"],
+  ] as const
+)
+  .map(([k, v]) => `${k}: ${v}`)
+  .join("; ");
+---
+
+<a href={`/themes/${entry.slug}/`} class="tile" style={styleVars} aria-label={`Open ${t.name} preview`}>
+  <div class="tile-window">
+    <div class="tile-bar">
+      <span class="dot d1"></span>
+      <span class="dot d2"></span>
+      <span class="dot d3"></span>
+      <span class="tile-title">{t.name}</span>
+    </div>
+    <div class="tile-body">
+      <div class="tile-line"><span class="kw">const</span> <span class="id">agent</span> = <span class="fn">spawn</span>()</div>
+      <div class="tile-line"><span class="kw">await</span> <span class="id">agent</span>.<span class="fn">run</span>(<span class="str">"build"</span>)</div>
+      <div class="tile-line muted">// {t.description?.slice(0, 36) ?? ""}</div>
+      <div class="tile-actions">
+        <span class="btn primary">Run</span>
+        <span class="btn destructive">Stop</span>
+      </div>
+      <div class="tile-charts">
+        <span class="c c1"></span><span class="c c2"></span><span class="c c3"></span><span class="c c4"></span><span class="c c5"></span>
+      </div>
+    </div>
+  </div>
+  <footer class="tile-meta">
+    <span class="name">{t.name}</span>
+    <span class="badges">
+      <span class="badge">{entry.origin}</span>
+      <span class="badge">{t.type}</span>
+    </span>
+  </footer>
+</a>
+
+<style>
+  .tile {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--card);
+    transition: transform .15s ease, border-color .15s ease;
+  }
+  .tile:hover { transform: translateY(-2px); border-color: var(--primary); }
+  .tile:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+
+  .tile-window {
+    background: var(--tile-bg);
+    color: var(--tile-fg);
+    padding: 0;
+    border-bottom: 1px solid var(--tile-border);
+  }
+  .tile-bar {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 10px;
+    background: var(--tile-card);
+    color: var(--tile-card-fg);
+    border-bottom: 1px solid var(--tile-border);
+  }
+  .dot { width: 8px; height: 8px; border-radius: 999px; display: inline-block; }
+  .d1 { background: var(--tile-destructive); }
+  .d2 { background: var(--tile-c4); }
+  .d3 { background: var(--tile-c2); }
+  .tile-title { margin-left: 6px; font-size: 10px; opacity: .7; letter-spacing: .04em; }
+
+  .tile-body {
+    padding: 12px 14px 14px;
+    font-family: ui-monospace, "SF Mono", "JetBrains Mono", monospace;
+    font-size: 11.5px;
+    line-height: 1.65;
+  }
+  .tile-line { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tile-line.muted { color: var(--tile-muted-fg); font-size: 10.5px; }
+  .kw { color: var(--tile-c5); }
+  .id { color: var(--tile-fg); }
+  .fn { color: var(--tile-c3); }
+  .str { color: var(--tile-c2); }
+
+  .tile-actions { display: flex; gap: 5px; margin-top: 10px; }
+  .btn {
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 10px;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+  }
+  .btn.primary { background: var(--tile-primary); color: var(--tile-primary-fg); }
+  .btn.destructive { background: var(--tile-destructive); color: var(--tile-destructive-fg); }
+
+  .tile-charts { display: flex; gap: 3px; margin-top: 10px; }
+  .c { display: block; height: 8px; flex: 1; border-radius: 2px; }
+  .c.c1 { background: var(--tile-c1); }
+  .c.c2 { background: var(--tile-c2); }
+  .c.c3 { background: var(--tile-c3); }
+  .c.c4 { background: var(--tile-c4); }
+  .c.c5 { background: var(--tile-c5); }
+
+  .tile-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    background: var(--card);
+    color: var(--cardForeground);
+    border-top: 1px solid var(--border);
+  }
+  .name { font-size: 13px; font-weight: 600; }
+  .badges { display: flex; gap: 4px; }
+  .badge {
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    background: var(--accent);
+    color: var(--accentForeground);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+</style>

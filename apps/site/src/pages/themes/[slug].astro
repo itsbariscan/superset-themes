@@ -1,0 +1,201 @@
+---
+import "../../styles/global.css";
+import EditorMock from "../../components/EditorMock.astro";
+import TerminalMock from "../../components/TerminalMock.astro";
+import { shippableThemes } from "../../lib/themes";
+
+export function getStaticPaths() {
+  return shippableThemes.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const t = entry.theme;
+const ui = t.ui;
+const term = t.terminal;
+
+// Inline every token via the html element's style attribute. Inline style has the highest
+// specificity, so it cleanly wins over global.css's :root defaults regardless of load order.
+const uiVars = Object.entries(ui)
+  .map(([k, v]) => `--${k}: ${v}`)
+  .join("; ");
+const termMap: Record<string, string> = {
+  background: "--term-bg",
+  foreground: "--term-fg",
+  cursor: "--term-cursor",
+  cursorAccent: "--term-cursorAccent",
+  selectionBackground: "--term-selection",
+  black: "--term-black",
+  red: "--term-red",
+  green: "--term-green",
+  yellow: "--term-yellow",
+  blue: "--term-blue",
+  magenta: "--term-magenta",
+  cyan: "--term-cyan",
+  white: "--term-white",
+  brightBlack: "--term-brightBlack",
+  brightRed: "--term-brightRed",
+  brightGreen: "--term-brightGreen",
+  brightYellow: "--term-brightYellow",
+  brightBlue: "--term-brightBlue",
+  brightMagenta: "--term-brightMagenta",
+  brightCyan: "--term-brightCyan",
+  brightWhite: "--term-brightWhite",
+};
+const termVars = Object.entries(term)
+  .map(([k, v]) => `${termMap[k]}: ${v}`)
+  .join("; ");
+const inlineThemeStyle = `${uiVars}; ${termVars}`;
+const downloadName = `${entry.slug}.json`;
+const themeJson = JSON.stringify(t, null, 2);
+---
+<!doctype html>
+<html lang="en" style={inlineThemeStyle}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{t.name} — superset-themes</title>
+    <meta name="description" content={t.description ?? `${t.name} theme for superset.sh`} />
+    <meta property="og:title" content={`${t.name} — superset-themes`} />
+    <meta property="og:description" content={t.description ?? `${t.name} theme for superset.sh`} />
+    <meta property="og:image" content={new URL(`/og/${entry.slug}.png`, Astro.site).toString()} />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body>
+    <header class="hero">
+      <a href="/" class="back">← all themes</a>
+      <div class="title-row">
+        <h1>{t.name}</h1>
+        <span class="badge">{entry.origin}</span>
+        <span class="badge">{t.type}</span>
+      </div>
+      {t.description && <p class="lede">{t.description}</p>}
+      {t.author && <p class="byline">by {t.author}</p>}
+      <div class="actions">
+        <a class="action" href={`https://github.com/itsbariscan/superset-themes/blob/main/themes/${entry.origin === "port" ? `ports/${entry.slug}/` : "originals/"}${downloadName}`}>View JSON on GitHub</a>
+        <button id="copy-btn" class="action" data-json={themeJson}>Copy JSON</button>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="surface">
+        <h2>Editor</h2>
+        <EditorMock />
+      </section>
+      <section class="surface">
+        <h2>Terminal</h2>
+        <TerminalMock />
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        Install in superset.sh: Settings → Appearance → Theme → Import → choose <code>{downloadName}</code>.
+      </p>
+    </footer>
+
+    <script>
+      const btn = document.getElementById("copy-btn");
+      if (btn) {
+        const json = btn.getAttribute("data-json") ?? "";
+        const original = btn.textContent;
+        btn.addEventListener("click", async () => {
+          try {
+            await navigator.clipboard.writeText(json);
+            btn.textContent = "Copied!";
+            setTimeout(() => { btn.textContent = original; }, 1500);
+          } catch {
+            btn.textContent = "Copy failed";
+          }
+        });
+      }
+    </script>
+
+    <style>
+      .hero {
+        padding: 48px 32px 16px;
+        max-width: 1280px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .back {
+        font-size: 13px;
+        color: var(--mutedForeground);
+        text-decoration: none;
+        margin-bottom: 4px;
+      }
+      .back:hover { color: var(--primary); }
+      .title-row { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+      h1 {
+        font-family: ui-monospace, monospace;
+        font-size: 32px;
+        letter-spacing: -.02em;
+        color: var(--foreground);
+        margin: 0;
+      }
+      .badge {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: .12em;
+        background: var(--accent);
+        color: var(--accentForeground);
+        padding: 3px 8px;
+        border-radius: 4px;
+      }
+      .lede { color: var(--mutedForeground); margin: 0; max-width: 70ch; }
+      .byline { color: var(--mutedForeground); margin: 0; font-size: 12px; }
+      .actions { display: flex; gap: 8px; margin-top: 8px; }
+      .action {
+        font-size: 12px;
+        padding: 6px 12px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--cardForeground);
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .action:hover { border-color: var(--primary); color: var(--primary); }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        padding: 16px 32px 32px;
+        max-width: 1280px;
+        margin: 0 auto;
+      }
+      @media (max-width: 1000px) {
+        .grid { grid-template-columns: 1fr; }
+      }
+      .surface { display: flex; flex-direction: column; gap: 8px; }
+      .surface h2 {
+        font-size: 12px;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        color: var(--mutedForeground);
+        margin: 0;
+      }
+
+      footer {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 24px 32px 48px;
+        color: var(--mutedForeground);
+        font-size: 12px;
+      }
+      code {
+        background: var(--accent);
+        color: var(--accentForeground);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: ui-monospace, monospace;
+      }
+    </style>
+  </body>
+</html>

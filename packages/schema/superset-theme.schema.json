@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/itsbariscan/superset-themes/packages/schema/superset-theme.schema.json",
+  "title": "superset.sh theme",
+  "description": "JSON theme schema for superset.sh (the AI-agent code editor at https://superset.sh). Derived from the official base file and the Custom Themes documentation. Missing values fall back to superset.sh defaults for the selected theme type.",
+  "type": "object",
+  "required": ["id", "name", "type", "ui", "terminal"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$",
+      "minLength": 2,
+      "maxLength": 64,
+      "description": "Unique theme id, kebab-case. superset.sh normalizes IDs (lowercase, [^a-z0-9]+ -> -) and rejects collisions with reserved IDs (system, dark, light, monokai)."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "description": "Human-readable display name shown in the theme grid."
+    },
+    "type": {
+      "enum": ["dark", "light"],
+      "description": "Determines fallbacks for missing tokens. Defaults to 'dark' in superset.sh if omitted."
+    },
+    "author": {
+      "type": "string",
+      "description": "Theme author (free-form)."
+    },
+    "version": {
+      "type": "string",
+      "description": "Optional theme version (free-form)."
+    },
+    "description": {
+      "type": "string",
+      "description": "One-sentence description shown in the theme grid."
+    },
+    "ui": {
+      "type": "object",
+      "description": "UI color tokens. Every value is a CSS color string (#rrggbb, #rrggbbaa, or rgba()).",
+      "additionalProperties": false,
+      "properties": {
+        "background": { "$ref": "#/$defs/cssColor" },
+        "foreground": { "$ref": "#/$defs/cssColor" },
+        "card": { "$ref": "#/$defs/cssColor" },
+        "cardForeground": { "$ref": "#/$defs/cssColor" },
+        "popover": { "$ref": "#/$defs/cssColor" },
+        "popoverForeground": { "$ref": "#/$defs/cssColor" },
+        "primary": { "$ref": "#/$defs/cssColor" },
+        "primaryForeground": { "$ref": "#/$defs/cssColor" },
+        "secondary": { "$ref": "#/$defs/cssColor" },
+        "secondaryForeground": { "$ref": "#/$defs/cssColor" },
+        "muted": { "$ref": "#/$defs/cssColor" },
+        "mutedForeground": { "$ref": "#/$defs/cssColor" },
+        "accent": { "$ref": "#/$defs/cssColor" },
+        "accentForeground": { "$ref": "#/$defs/cssColor" },
+        "tertiary": { "$ref": "#/$defs/cssColor" },
+        "tertiaryActive": { "$ref": "#/$defs/cssColor" },
+        "destructive": { "$ref": "#/$defs/cssColor" },
+        "destructiveForeground": { "$ref": "#/$defs/cssColor" },
+        "border": { "$ref": "#/$defs/cssColor" },
+        "input": { "$ref": "#/$defs/cssColor" },
+        "ring": { "$ref": "#/$defs/cssColor" },
+        "sidebar": { "$ref": "#/$defs/cssColor" },
+        "sidebarForeground": { "$ref": "#/$defs/cssColor" },
+        "sidebarPrimary": { "$ref": "#/$defs/cssColor" },
+        "sidebarPrimaryForeground": { "$ref": "#/$defs/cssColor" },
+        "sidebarAccent": { "$ref": "#/$defs/cssColor" },
+        "sidebarAccentForeground": { "$ref": "#/$defs/cssColor" },
+        "sidebarBorder": { "$ref": "#/$defs/cssColor" },
+        "sidebarRing": { "$ref": "#/$defs/cssColor" },
+        "chart1": { "$ref": "#/$defs/cssColor" },
+        "chart2": { "$ref": "#/$defs/cssColor" },
+        "chart3": { "$ref": "#/$defs/cssColor" },
+        "chart4": { "$ref": "#/$defs/cssColor" },
+        "chart5": { "$ref": "#/$defs/cssColor" },
+        "highlightMatch": { "$ref": "#/$defs/cssColor" },
+        "highlightActive": { "$ref": "#/$defs/cssColor" },
+        "highlight": { "$ref": "#/$defs/cssColor" },
+        "highlightForeground": { "$ref": "#/$defs/cssColor" }
+      }
+    },
+    "terminal": {
+      "type": "object",
+      "description": "Terminal color tokens. Standard 16-color ANSI palette + cursor + selection.",
+      "additionalProperties": false,
+      "properties": {
+        "background": { "$ref": "#/$defs/cssColor" },
+        "foreground": { "$ref": "#/$defs/cssColor" },
+        "cursor": { "$ref": "#/$defs/cssColor" },
+        "cursorAccent": { "$ref": "#/$defs/cssColor" },
+        "selectionBackground": { "$ref": "#/$defs/cssColor" },
+        "selectionForeground": { "$ref": "#/$defs/cssColor" },
+        "black": { "$ref": "#/$defs/cssColor" },
+        "red": { "$ref": "#/$defs/cssColor" },
+        "green": { "$ref": "#/$defs/cssColor" },
+        "yellow": { "$ref": "#/$defs/cssColor" },
+        "blue": { "$ref": "#/$defs/cssColor" },
+        "magenta": { "$ref": "#/$defs/cssColor" },
+        "cyan": { "$ref": "#/$defs/cssColor" },
+        "white": { "$ref": "#/$defs/cssColor" },
+        "brightBlack": { "$ref": "#/$defs/cssColor" },
+        "brightRed": { "$ref": "#/$defs/cssColor" },
+        "brightGreen": { "$ref": "#/$defs/cssColor" },
+        "brightYellow": { "$ref": "#/$defs/cssColor" },
+        "brightBlue": { "$ref": "#/$defs/cssColor" },
+        "brightMagenta": { "$ref": "#/$defs/cssColor" },
+        "brightCyan": { "$ref": "#/$defs/cssColor" },
+        "brightWhite": { "$ref": "#/$defs/cssColor" }
+      }
+    },
+    "editor": {
+      "type": "object",
+      "description": "Optional partial overrides for editor + syntax colors. When omitted, superset.sh derives these from the ui + terminal blocks (see docs/RENDERER_FIDELITY.md for the derivation table). Provided values override the derived defaults; omitted ones keep their derived value.",
+      "additionalProperties": false,
+      "properties": {
+        "colors": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Editor chrome (gutter, panels, diff, search highlights). Each field is optional; the upstream EditorColors interface defines them all.",
+          "properties": {
+            "background": { "$ref": "#/$defs/cssColor" },
+            "foreground": { "$ref": "#/$defs/cssColor" },
+            "border": { "$ref": "#/$defs/cssColor" },
+            "cursor": { "$ref": "#/$defs/cssColor" },
+            "gutterBackground": { "$ref": "#/$defs/cssColor" },
+            "gutterForeground": { "$ref": "#/$defs/cssColor" },
+            "activeLine": { "$ref": "#/$defs/cssColor" },
+            "selection": { "$ref": "#/$defs/cssColor" },
+            "search": { "$ref": "#/$defs/cssColor" },
+            "searchActive": { "$ref": "#/$defs/cssColor" },
+            "panel": { "$ref": "#/$defs/cssColor" },
+            "panelBorder": { "$ref": "#/$defs/cssColor" },
+            "panelInputBackground": { "$ref": "#/$defs/cssColor" },
+            "panelInputForeground": { "$ref": "#/$defs/cssColor" },
+            "panelInputBorder": { "$ref": "#/$defs/cssColor" },
+            "panelButtonBackground": { "$ref": "#/$defs/cssColor" },
+            "panelButtonForeground": { "$ref": "#/$defs/cssColor" },
+            "panelButtonBorder": { "$ref": "#/$defs/cssColor" },
+            "diffBuffer": { "$ref": "#/$defs/cssColor" },
+            "diffHover": { "$ref": "#/$defs/cssColor" },
+            "diffSeparator": { "$ref": "#/$defs/cssColor" },
+            "addition": { "$ref": "#/$defs/cssColor" },
+            "deletion": { "$ref": "#/$defs/cssColor" },
+            "modified": { "$ref": "#/$defs/cssColor" }
+          }
+        },
+        "syntax": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Syntax highlighting tokens. When omitted, derived from terminal palette per docs/RENDERER_FIDELITY.md.",
+          "properties": {
+            "plainText": { "$ref": "#/$defs/cssColor" },
+            "comment": { "$ref": "#/$defs/cssColor" },
+            "keyword": { "$ref": "#/$defs/cssColor" },
+            "string": { "$ref": "#/$defs/cssColor" },
+            "number": { "$ref": "#/$defs/cssColor" },
+            "functionCall": { "$ref": "#/$defs/cssColor" },
+            "variableName": { "$ref": "#/$defs/cssColor" },
+            "typeName": { "$ref": "#/$defs/cssColor" },
+            "className": { "$ref": "#/$defs/cssColor" },
+            "constant": { "$ref": "#/$defs/cssColor" },
+            "regexp": { "$ref": "#/$defs/cssColor" },
+            "tagName": { "$ref": "#/$defs/cssColor" },
+            "attributeName": { "$ref": "#/$defs/cssColor" },
+            "invalid": { "$ref": "#/$defs/cssColor" }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "cssColor": {
+      "type": "string",
+      "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|rgba?\\(\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*(,\\s*[0-9]*\\.?[0-9]+\\s*)?\\))$",
+      "description": "Hex color (#rgb, #rgba, #rrggbb, #rrggbbaa) or rgb()/rgba() function. Must not be empty."
+    }
+  }
+}

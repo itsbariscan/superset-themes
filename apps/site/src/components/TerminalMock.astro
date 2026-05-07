@@ -1,0 +1,97 @@
+---
+// xterm-like terminal mock — exercises every terminal token (16 ANSI + cursor + selection).
+---
+<div class="term" role="img" aria-label="Terminal mock">
+  <div class="term-head">
+    <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+    <span class="title">~/superset · zsh · 80×24</span>
+  </div>
+  <pre class="term-body">
+<span class="prompt"><span class="user">baris</span><span class="at">@</span><span class="host">studio</span><span class="sep">:</span><span class="path">~/superset</span><span class="dollar">$</span></span> <span class="t-cmd">superset run --agents 8 --model claude-opus-4-7</span>
+<span class="t-info">[<span class="t-blue">info</span>] spawning 8 worktrees</span>
+<span class="t-row">
+  <span class="t-black">■</span><span class="t-red">■</span><span class="t-green">■</span><span class="t-yellow">■</span><span class="t-blue">■</span><span class="t-magenta">■</span><span class="t-cyan">■</span><span class="t-white">■</span>
+  <span class="t-bblack">■</span><span class="t-bred">■</span><span class="t-bgreen">■</span><span class="t-byellow">■</span><span class="t-bblue">■</span><span class="t-bmagenta">■</span><span class="t-bcyan">■</span><span class="t-bwhite">■</span>
+</span>
+<span class="t-info">[<span class="t-green">ok</span>]   agent <span class="t-cyan">api-routes</span> ready (worktree <span class="t-bblack">a3c1f</span>)</span>
+<span class="t-info">[<span class="t-yellow">warn</span>] retrying tool call (<span class="t-magenta">3/5</span>)</span>
+<span class="t-info">[<span class="t-red">err</span>]  agent <span class="t-cyan">scraper</span> exited <span class="t-bred">code 137</span></span>
+<span class="t-selected">selected output looks like this — selection highlight token</span>
+<span class="prompt"><span class="user">baris</span><span class="at">@</span><span class="host">studio</span><span class="sep">:</span><span class="path">~/superset</span><span class="dollar">$</span></span> <span class="cursor">█</span>
+</pre>
+</div>
+
+<style>
+  .term {
+    background: var(--term-bg);
+    color: var(--term-fg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    font-family: ui-monospace, "SF Mono", "JetBrains Mono", monospace;
+    font-size: 12.5px;
+    line-height: 1.55;
+  }
+  .term-head {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 12px;
+    background: var(--card);
+    color: var(--mutedForeground);
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    letter-spacing: .04em;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
+  .dot.r { background: var(--destructive); }
+  .dot.y { background: var(--chart4); }
+  .dot.g { background: var(--chart2); }
+  .title { margin-left: 8px; }
+
+  .term-body {
+    margin: 0;
+    padding: 14px 16px;
+    white-space: pre-wrap;
+  }
+
+  .prompt .user    { color: var(--term-green); }
+  .prompt .at      { color: var(--term-fg); opacity: .6; }
+  .prompt .host    { color: var(--term-cyan); }
+  .prompt .sep     { color: var(--term-fg); opacity: .6; }
+  .prompt .path    { color: var(--term-blue); }
+  .prompt .dollar  { color: var(--term-magenta); margin-left: 4px; }
+
+  .t-cmd     { color: var(--term-fg); }
+  .t-info    { display: block; }
+  .t-row     { display: inline-flex; gap: 2px; padding: 2px 0; }
+
+  .t-black   { color: var(--term-black);   }
+  .t-red     { color: var(--term-red);     }
+  .t-green   { color: var(--term-green);   }
+  .t-yellow  { color: var(--term-yellow);  }
+  .t-blue    { color: var(--term-blue);    }
+  .t-magenta { color: var(--term-magenta); }
+  .t-cyan    { color: var(--term-cyan);    }
+  .t-white   { color: var(--term-white);   }
+  .t-bblack   { color: var(--term-brightBlack);   }
+  .t-bred     { color: var(--term-brightRed);     }
+  .t-bgreen   { color: var(--term-brightGreen);   }
+  .t-byellow  { color: var(--term-brightYellow);  }
+  .t-bblue    { color: var(--term-brightBlue);    }
+  .t-bmagenta { color: var(--term-brightMagenta); }
+  .t-bcyan    { color: var(--term-brightCyan);    }
+  .t-bwhite   { color: var(--term-brightWhite);   }
+
+  .t-selected {
+    background: var(--term-selection);
+    color: var(--term-fg);
+    display: inline-block;
+    padding: 0 2px;
+  }
+
+  .cursor {
+    background: var(--term-cursor);
+    color: var(--term-cursorAccent);
+    animation: termblink 1.05s steps(2, end) infinite;
+  }
+  @keyframes termblink { 50% { opacity: 0 } }
+</style>

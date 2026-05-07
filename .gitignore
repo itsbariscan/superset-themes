@@ -1,0 +1,26 @@
+node_modules/
+.DS_Store
+.env
+.env.local
+.env.*.local
+
+# Bun
+bun.lock
+bun.lockb
+
+# Build output
+apps/*/dist/
+apps/*/.astro/
+apps/*/node_modules/
+**/dist/
+
+# Editor
+.vscode/
+.idea/
+
+# OS
+*.log
+*.swp
+
+# Internal working state (craft-cli artifacts, internal screenshots)
+.craft/

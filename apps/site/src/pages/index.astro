@@ -1,0 +1,134 @@
+---
+import "../styles/global.css";
+import EditorMock from "../components/EditorMock.astro";
+import TerminalMock from "../components/TerminalMock.astro";
+import ThemeSwitcher from "../components/ThemeSwitcher.astro";
+import ThemeTile from "../components/ThemeTile.astro";
+import { shippableThemes } from "../lib/themes";
+
+const portCount = shippableThemes.filter((t) => t.origin === "port").length;
+const originalCount = shippableThemes.filter((t) => t.origin === "original").length;
+
+const ordered = shippableThemes.slice().sort((a, b) => {
+  if (a.origin !== b.origin) return a.origin === "original" ? -1 : 1;
+  return a.theme.name.localeCompare(b.theme.name);
+});
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>superset-themes — a curated theme library for superset.sh</title>
+    <meta name="description" content="A curated theme library for superset.sh — hand-tuned ports of beloved classics + originals anchored to physical references." />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="brand">
+        <span class="mark">★</span>
+        <span class="wordmark">superset-themes</span>
+      </div>
+      <p class="lede">
+        A curated theme library for <a href="https://superset.sh">superset.sh</a> — the AI-agent code editor. Hand-tuned ports of beloved classics + originals anchored to physical references.
+      </p>
+      <p class="counts">
+        <strong>{portCount}</strong> ports + <strong>{originalCount}</strong> originals
+      </p>
+      <ThemeSwitcher />
+    </header>
+
+    <main class="grid">
+      <section class="surface">
+        <h2>Editor</h2>
+        <EditorMock />
+      </section>
+      <section class="surface">
+        <h2>Terminal</h2>
+        <TerminalMock />
+      </section>
+    </main>
+
+    <section class="catalog">
+      <h2 class="catalog-title">Catalog</h2>
+      <p class="catalog-lede">Click any tile to open its full preview.</p>
+      <div class="tiles">
+        {ordered.map((entry) => <ThemeTile entry={entry} />)}
+      </div>
+    </section>
+
+    <footer>
+      <p>MIT for tooling and originals · ports retain their upstream license · <a href="https://github.com/itsbariscan/superset-themes">github.com/itsbariscan/superset-themes</a></p>
+    </footer>
+
+    <style>
+      .hero {
+        padding: 48px 32px 24px;
+        max-width: 1280px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .brand { display: flex; align-items: center; gap: 10px; }
+      .mark { color: var(--primary); font-size: 22px; }
+      .wordmark {
+        font-family: ui-monospace, monospace;
+        font-weight: 600;
+        letter-spacing: -.01em;
+        color: var(--foreground);
+      }
+      .lede { color: var(--mutedForeground); margin: 0; max-width: 60ch; }
+      .lede a { color: var(--primary); }
+      .counts { margin: 0; color: var(--mutedForeground); font-size: 13px; }
+      .counts strong { color: var(--foreground); }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        padding: 0 32px 32px;
+        max-width: 1280px;
+        margin: 0 auto;
+      }
+      @media (max-width: 1000px) {
+        .grid { grid-template-columns: 1fr; }
+      }
+      .surface { display: flex; flex-direction: column; gap: 8px; }
+      .surface h2 {
+        font-size: 12px;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        color: var(--mutedForeground);
+        margin: 0;
+      }
+
+      .catalog {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 24px 32px 64px;
+      }
+      .catalog-title {
+        font-size: 12px;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        color: var(--mutedForeground);
+        margin: 0 0 4px 0;
+      }
+      .catalog-lede { color: var(--mutedForeground); margin: 0 0 18px 0; font-size: 13px; }
+      .tiles {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 16px;
+      }
+
+      footer {
+        padding: 24px 32px 48px;
+        max-width: 1280px;
+        margin: 0 auto;
+        color: var(--mutedForeground);
+        font-size: 12px;
+      }
+      footer a { color: var(--primary); }
+    </style>
+  </body>
+</html>

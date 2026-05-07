@@ -1,0 +1,83 @@
+---
+import { themes } from "../lib/themes";
+
+const ordered = themes.slice().sort((a, b) => {
+  if (a.shippable !== b.shippable) return a.shippable ? -1 : 1;
+  if (a.origin !== b.origin) return a.origin === "port" ? -1 : 1;
+  return a.theme.name.localeCompare(b.theme.name);
+});
+---
+
+<div class="switcher" role="region" aria-label="Theme switcher">
+  <label for="theme-select">Theme</label>
+  <select id="theme-select" aria-label="Pick a theme">
+    {ordered.map((t) => (
+      <option value={t.slug} data-shippable={t.shippable ? "1" : "0"} data-origin={t.origin}>
+        {t.theme.name}{t.shippable ? "" : " · reference"}
+      </option>
+    ))}
+  </select>
+  <span class="badge" id="theme-meta"></span>
+</div>
+
+<script>
+  import { applyTheme } from "../lib/applyTheme";
+  import { themes } from "../lib/themes";
+
+  const select = document.getElementById("theme-select") as HTMLSelectElement | null;
+  const meta = document.getElementById("theme-meta");
+  if (!select) throw new Error("theme-select missing");
+
+  const STORAGE_KEY = "superset-themes:active-slug";
+  const initialFromStorage = localStorage.getItem(STORAGE_KEY);
+  const slugs = themes.map((t) => t.slug);
+  const initial = initialFromStorage && slugs.includes(initialFromStorage)
+    ? initialFromStorage
+    : (themes.find((t) => t.shippable)?.slug ?? themes[0]?.slug);
+  if (!initial) throw new Error("no themes available");
+
+  function pick(slug: string) {
+    const entry = themes.find((t) => t.slug === slug);
+    if (!entry) return;
+    applyTheme(entry.theme);
+    if (meta) {
+      meta.textContent = `${entry.origin} · ${entry.theme.type}`;
+    }
+    localStorage.setItem(STORAGE_KEY, slug);
+  }
+
+  select.value = initial;
+  pick(initial);
+  select.addEventListener("change", () => pick(select.value));
+</script>
+
+<style>
+  .switcher {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card);
+    color: var(--cardForeground);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+  label { color: var(--mutedForeground); font-size: 12px; }
+  select {
+    background: var(--input);
+    color: var(--cardForeground);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 13px;
+    outline: none;
+  }
+  select:focus { border-color: var(--ring); box-shadow: 0 0 0 2px var(--ring); }
+  .badge {
+    font-size: 11px;
+    color: var(--mutedForeground);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+</style>

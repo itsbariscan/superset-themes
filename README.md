@@ -56,7 +56,9 @@ When superset.sh launched, the marketplace shipped with three built-in themes (D
 
 ## Live preview
 
-A static gallery with a hot-swap demo will live at `https://itsbariscan.github.io/superset-themes/` once the GitHub Pages workflow lands its first deploy. Until then, run it locally:
+**[itsbariscan.github.io/superset-themes](https://itsbariscan.github.io/superset-themes/)** — full catalog with a hot-swap demo. Pick any theme from the dropdown and the entire page re-skins instantly.
+
+Or run locally:
 
 ```bash
 bun install
